@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Clock
+    version="2"
+    type="awesome"
+    frameRate="30"
+    screenWidth="1080"
+    resDensity="480"
+    scaleByDensity="false">
+
+    <!-- VARIABLE BINDERS -->
+
+    <VariableBinders>
+
+        <!-- Weather -->
+        <ContentProviderBinder
+            uri="content://weather/actualWeatherData/1"
+            columns="city_name,weather_type,aqilevel,description,temperature,temperature_range"
+            countName="hasweather">
+
+            <Variable name="weather_location" type="string" column="city_name"/>
+            <Variable name="weather_id" type="int" column="weather_type"/>
+            <Variable name="weather_temperature" type="int" column="temperature"/>
+            <Variable name="weather_description" type="string" column="description"/>
+            <Variable name="weather_aqi" type="int" column="aqilevel"/>
+
+            <Trigger>
+
+                <!-- AQI -->
+                <VariableCommand
+                    name="air_quality"
+                    type="string"
+                    expression="ifelse(
+                    #weather_aqi}=0**#weather_aqi{=50,'Rất tốt',
+                    #weather_aqi}50**#weather_aqi{=100,'Tốt',
+                    #weather_aqi}100**#weather_aqi{=150,'Ô nhiễm nhẹ',
+                    #weather_aqi}150**#weather_aqi{=200,'Ô nhiễm vừa',
+                    #weather_aqi}200**#weather_aqi{=300,'Nguy hiểm',
+                    #weather_aqi}300,'Độc hại',
+                    'Không có dữ liệu')"/>
+
+                <!-- Weather Icon ID -->
+                <VariableCommand
+                    name="weatherId"
+                    expression="ifelse(
+                    #weather_id}25||#weather_id{0,0,
+                    (#weather_id}=4**#weather_id{=6||
+                    #weather_id}=8**#weather_id{=11||
+                    #weather_id==25),4,
+                    #weather_id}=13**#weather_id{=17,13,
+                    #weather_id}=18**#weather_id{=21||
+                    #weather_id==23,18,
+                    #weather_id)"/>
+
+            </Trigger>
+
+        </ContentProviderBinder>
+
+    </VariableBinders>
+
+     <!-- Lunar -->
+
+
+    <Var name="xy1" expression="abs(#year_lunar%10)" />
+
+    <Var
+        name="can"
+        type="string"
+        expression="ifelse(
+        eq(#xy1,0),'Canh',
+        eq(#xy1,1),'Tân',
+        eq(#xy1,2),'Nhâm',
+        eq(#xy1,3),'Quý',
+        eq(#xy1,4),'Giáp',
+        eq(#xy1,5),'Ất',
+        eq(#xy1,6),'Bính',
+        eq(#xy1,7),'Đinh',
+        eq(#xy1,8),'Mậu',
+        'Kỷ')" />
+
+
+    <Var name="xy2" expression="abs(#year_lunar%12)" />
+
+    <Var
+        name="chi"
+        type="string"
+        expression="ifelse(
+        eq(#xy2,0),'Thân',
+        eq(#xy2,1),'Dậu',
+        eq(#xy2,2),'Tuất',
+        eq(#xy2,3),'Hợi',
+        eq(#xy2,4),'Tý',
+        eq(#xy2,5),'Sửu',
+        eq(#xy2,6),'Dần',
+        eq(#xy2,7),'Mão',
+        eq(#xy2,8),'Thìn',
+        eq(#xy2,9),'Tỵ',
+        eq(#xy2,10),'Ngọ',
+        'Mùi')" />
+
+    <!-- BUTTON -->
+
+
+    <!-- Clock -->
+    <Button
+        name="clock_button"
+        x="#view_width/2"
+        y="200"
+        w="700"
+        h="180"
+        align="center"
+        alignV="center"
+        haptic="true"/>
+
+    <!-- Calendar -->
+    <Button
+        x="#view_width/2"
+        y="520"
+        w="850"
+        h="180"
+        align="center"
+        alignV="center"
+        haptic="true">
+
+        <Triggers>
+            <Trigger action="up">
+
+                <IntentCommand
+                    action="android.intent.action.MAIN"
+                    package="com.android.calendar"
+                    class="com.android.calendar.AllInOneActivity"/>
+
+            </Trigger>
+        </Triggers>
+
+    </Button>
+
+  
+    <!-- LIGHT WALLPAPER -->
+
+
+    <Group visibility="#applied_light_wallpaper">
+
+        <!-- Time -->
+        <Time
+    x="#view_width/2"
+    y="250"
+    alpha="255 * 0.88"
+    align="center"
+    alignV="center"
+    src="time_dark/time.png"
+    space="20"
+    formatExp="ifelse(#time_format,'HH:mm','h:mm')"/>
+
+        <!-- Date -->
+        <Group
+            x="#view_width/2"
+            y="420"
+            alpha="255 * 0.85"
+            w="#date_.bmp_width"
+            alignV="center"
+            align="center">
+
+            <DateTime
+                name="date_"
+                align="center"
+                alignV="center"
+                size="60"
+                color="#000000"
+                fontFamily="mipro-semibold"
+                format="EEE, dd 'Tháng' MM"/>
+
+        </Group>
+
+        <!-- Lunar -->
+        <Text
+    x="#view_width/2"
+    y="510"
+    align="center"
+    alignV="center"
+    size="42"
+    color="#000000"
+    fontFamily="mipro-semibold"
+    textExp="
+    'Âm lịch: '+
+    int(#date_lunar)+'/'+
+    int(#month_lunar+1)+
+    ifelse(#month_lunar_leap,' (Nhuận)','')+
+    ' '+@can+' '+@chi"/>
+
+        <!-- Weather + AQI -->
+        <Text
+            x="#view_width/2"
+            y="570"
+            align="center"
+            alignV="center"
+            size="34"
+            color="#444444"
+            fontFamily="mipro-medium"
+            textExp="
+            @weather_description+
+            ' • '+
+            #weather_temperature+'°'+
+            ' • AQI '+
+            #weather_aqi"/>
+
+    </Group>
+
+    <!-- DARK WALLPAPER -->
+
+
+    <Group visibility="not(#applied_light_wallpaper)">
+
+        <!-- Time -->
+       <Time
+    x="#view_width/2"
+    y="250"
+    alpha="255 * 0.92"
+    align="center"
+    alignV="center"
+    src="time/time.png"
+    space="20"
+    formatExp="ifelse(#time_format,'HH:mm','h:mm')"/>
+
+        <!-- Date -->
+        <Group
+            x="#view_width/2"
+            y="420"
+            alpha="255 * 0.92"
+            w="#date_.bmp_width"
+            alignV="center"
+            align="center">
+
+            <DateTime
+                name="date_"
+                align="center"
+                alignV="center"
+                size="60"
+                color="#FFFFFF"
+                fontFamily="mipro-semibold"
+                format="EEE, dd 'Tháng' MM"/>
+
+        </Group>
+
+        <!-- Lunar -->
+       <Text
+    x="#view_width/2"
+    y="510"
+    align="center"
+    alignV="center"
+    size="42"
+    color="#FFFFFF"
+    fontFamily="mipro-semibold"
+    textExp="
+    'Âm lịch: '+
+    int(#date_lunar)+'/'+
+    int(#month_lunar+1)+
+    ifelse(#month_lunar_leap,' (Nhuận)','')+
+    ' '+@can+' '+@chi"/>
+
+        <!-- Weather + AQI -->
+        <Text
+            x="#view_width/2"
+            y="570"
+            align="center"
+            alignV="center"
+            size="34"
+            color="#DDDDDD"
+            fontFamily="mipro-medium"
+            textExp="
+            @weather_description+
+            ' • '+
+            #weather_temperature+'°'+
+            ' • AQI '+
+            #weather_aqi"/>
+
+    </Group>
+
+</Clock>
