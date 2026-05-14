@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MIUI-Theme>
+	<version>3.1</version>
+	<uiVersion>17</uiVersion>
+	<author>Hyper 14</author>
+	<designer>Hyper 14</designer>
+	<title>Waterfall</title>
+	<description>
+A simple personalized theme for HyperOS / MIUI.
+
+Main changes:
+• Added lunar calendar support
+• Customized wallpapers
+• Modified battery icon
+• Redesigned home screen clock widget
+
+This is a beginner practice project focused on basic UI customization and learning HyperOS theme structure.
+
+Compatible with HyperOS 1/2 and some MIUI versions.
+Certain elements may vary depending on device and ROM version.
+
+Thanks for using and supporting beginner theme developers 💙
+</description>
+	<editorVersion>2.0.5</editorVersion>
+	<resourceType>theme</resourceType>
+	<moduleVersion>com.android.contacts:0.0.2;com.android.mms:0.0.2;com.android.settings:0.0.2;com.android.systemui:0.0.2;com.miui.home:0.0.2;com.miui.notification:0.0.2;com.miui.securitycenter:0.0.2;framework-res:0.0.2;</moduleVersion>
+	<miuiAdapterVersion>3.2</miuiAdapterVersion>
+</MIUI-Theme>
